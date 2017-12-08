@@ -1,0 +1,22 @@
+# Audit log routing definition
+audit_log.settings_tab:
+  route_name: audit_log.settings
+  title: 'Settings'
+  base_route: audit_log.settings
+
+entity.audit_log.canonical:
+  route_name: entity.audit_log.canonical
+  base_route: entity.audit_log.canonical
+  title: 'View'
+
+entity.audit_log.edit_form:
+  route_name: entity.audit_log.edit_form
+  base_route: entity.audit_log.canonical
+  title: 'Edit'
+
+entity.audit_log.delete_form:
+  route_name:  entity.audit_log.delete_form
+  base_route:  entity.audit_log.canonical
+  title: Delete
+  weight: 10
+

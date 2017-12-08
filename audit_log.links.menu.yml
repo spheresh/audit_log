@@ -1,0 +1,14 @@
+
+# Audit log menu items definition
+entity.audit_log.collection:
+  title: 'Audit log list'
+  route_name: entity.audit_log.collection
+  description: 'List Audit log entities'
+  parent: system.admin_structure
+  weight: 100
+
+audit_log.admin.structure.settings:
+  title: Audit log settings
+  description: 'Configure Audit log entities'
+  route_name: audit_log.settings
+  parent: system.admin_structure
