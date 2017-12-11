@@ -21,10 +21,7 @@ class AuditLogAccessControlHandler extends EntityAccessControlHandler {
     /** @var \Drupal\audit_log\Entity\AuditLogInterface $entity */
     switch ($operation) {
       case 'view':
-        if (!$entity->isPublished()) {
-          return AccessResult::allowedIfHasPermission($account, 'view unpublished audit log entities');
-        }
-        return AccessResult::allowedIfHasPermission($account, 'view published audit log entities');
+        return AccessResult::allowedIfHasPermission($account, 'view audit log entities');
 
       case 'update':
         return AccessResult::allowedIfHasPermission($account, 'edit audit log entities');

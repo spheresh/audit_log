@@ -19,14 +19,9 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Audit log"),
  *   handlers = {
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
- *     "list_builder" = "Drupal\audit_log\AuditLogListBuilder",
  *     "views_data" = "Drupal\audit_log\Entity\AuditLogViewsData",
- *
  *     "form" = {
  *       "default" = "Drupal\audit_log\Form\AuditLogForm",
- *       "add" = "Drupal\audit_log\Form\AuditLogForm",
- *       "edit" = "Drupal\audit_log\Form\AuditLogForm",
- *       "delete" = "Drupal\audit_log\Form\AuditLogDeleteForm",
  *     },
  *     "access" = "Drupal\audit_log\AuditLogAccessControlHandler",
  *     "route_provider" = {
@@ -41,16 +36,7 @@ use Drupal\user\UserInterface;
  *     "uuid" = "uuid",
  *     "uid" = "user_id",
  *     "langcode" = "langcode",
- *     "status" = "status",
- *   },
- *   links = {
- *     "canonical" = "/admin/structure/audit_log/{audit_log}",
- *     "add-form" = "/admin/structure/audit_log/add",
- *     "edit-form" = "/admin/structure/audit_log/{audit_log}/edit",
- *     "delete-form" = "/admin/structure/audit_log/{audit_log}/delete",
- *     "collection" = "/admin/structure/audit_log",
- *   },
- *   field_ui_base_route = "audit_log.settings"
+ *   }
  * )
  */
 class AuditLog extends ContentEntityBase implements AuditLogInterface {
@@ -70,18 +56,9 @@ class AuditLog extends ContentEntityBase implements AuditLogInterface {
   /**
    * {@inheritdoc}
    */
-  public function getName() {
-    return $this->get('name')->value;
+  public function label() {
+    return $this->getMessage();
   }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setName($name) {
-    $this->set('name', $name);
-    return $this;
-  }
-
   /**
    * {@inheritdoc}
    */
@@ -114,6 +91,13 @@ class AuditLog extends ContentEntityBase implements AuditLogInterface {
   /**
    * {@inheritdoc}
    */
+  public function getMessage() {
+    return $this->get('message')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function setOwnerId($uid) {
     $this->set('user_id', $uid);
     return $this;
@@ -126,22 +110,6 @@ class AuditLog extends ContentEntityBase implements AuditLogInterface {
     $this->set('user_id', $account->id());
     return $this;
   }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function isPublished() {
-    return (bool) $this->getEntityKey('status');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setPublished($published) {
-    $this->set('status', $published ? TRUE : FALSE);
-    return $this;
-  }
-
   /**
    * {@inheritdoc}
    */
@@ -151,52 +119,31 @@ class AuditLog extends ContentEntityBase implements AuditLogInterface {
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))
       ->setDescription(t('The user ID of author of the Audit log entity.'))
-      ->setRevisionable(TRUE)
-      ->setSetting('target_type', 'user')
-      ->setSetting('handler', 'default')
-      ->setTranslatable(TRUE)
-      ->setDisplayOptions('view', [
-        'label' => 'hidden',
-        'type' => 'author',
-        'weight' => 0,
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'entity_reference_autocomplete',
-        'weight' => 5,
-        'settings' => [
-          'match_operator' => 'CONTAINS',
-          'size' => '60',
-          'autocomplete_type' => 'tags',
-          'placeholder' => '',
-        ],
-      ])
-      ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayConfigurable('view', TRUE);
+      ->setSetting('target_type', 'user');
 
-    $fields['name'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Name'))
-      ->setDescription(t('The name of the Audit log entity.'))
-      ->setSettings([
-        'max_length' => 50,
-        'text_processing' => 0,
-      ])
-      ->setDefaultValue('')
-      ->setDisplayOptions('view', [
-        'label' => 'above',
-        'type' => 'string',
-        'weight' => -4,
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'string_textfield',
-        'weight' => -4,
-      ])
-      ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayConfigurable('view', TRUE);
+    $fields['entity_id'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Target entity'))
+      ->setDescription(t('The entity id of the entity that was created, modified or deleted.'));
 
-    $fields['status'] = BaseFieldDefinition::create('boolean')
-      ->setLabel(t('Publishing status'))
-      ->setDescription(t('A boolean indicating whether the Audit log is published.'))
-      ->setDefaultValue(TRUE);
+    $fields['event'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Event'))
+      ->setDescription(t('The event type, usually insert, update or delete.'));
+
+    $fields['previous_state'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Previous state'))
+      ->setDescription(t('The previous state of the entity if available.'));
+
+    $fields['current_state'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Current state'))
+      ->setDescription(t('The current state of the entity if available.'));
+
+    $fields['message'] = BaseFieldDefinition::create('string_long')
+      ->setLabel(t('Text of log message'))
+      ->setDescription(t('Text of log message to be passed into the t() function.'));
+
+    $fields['variables'] = BaseFieldDefinition::create('map')
+      ->setLabel(t('Variables of log message'))
+      ->setDescription(t('Serialized array of variables that match the message string and that is passed into the t() function.'));
 
     $fields['created'] = BaseFieldDefinition::create('created')
       ->setLabel(t('Created'))
