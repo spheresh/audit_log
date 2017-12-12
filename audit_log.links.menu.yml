@@ -1,0 +1,7 @@
+
+# Audit log menu items definition
+audit_log.admin.structure.settings:
+  title: Audit log settings
+  description: 'Configure Audit log entities'
+  route_name: audit_log.settings
+  parent: system.admin_structure
