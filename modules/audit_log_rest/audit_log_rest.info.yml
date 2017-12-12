@@ -1,0 +1,8 @@
+name: Audit Log Rest
+type: module
+description: Audit Log REST
+core: 8.x
+package: Custom
+dependencies:
+  - rest
+  - audit_log

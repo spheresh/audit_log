@@ -1,0 +1,7 @@
+services:
+
+  serializer.normalizer.audit_log:
+    class: Drupal\audit_log_rest\Normalizer\AuditLogNormalizer
+    tags:
+      - { name: normalizer, priority: 100 }
+    arguments: ['@entity.manager']
