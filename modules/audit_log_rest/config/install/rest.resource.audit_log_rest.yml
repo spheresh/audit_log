@@ -1,0 +1,19 @@
+uuid: e92a1cce-e15c-4d97-acd4-517732cadcdd
+langcode: en
+status: true
+dependencies:
+  module:
+    - audit_log_rest
+    - basic_auth
+    - serialization
+    - user
+id: audit_log_rest
+plugin_id: audit_log_rest
+granularity: resource
+configuration:
+  methods:
+    - GET
+  formats:
+    - json
+  authentication:
+    - basic_auth
